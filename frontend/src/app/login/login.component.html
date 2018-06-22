@@ -1,0 +1,8 @@
+<div class="login">
+  <div class="login-box">
+      <h3>Login <p [hidden]="!errorMessage">{{errorMessage}}</p></h3>
+      <input type="email" placeholder="Your email" [(ngModel)]="email">
+      <input type="password" placeholder="Password" [(ngModel)]="password">
+      <input (click)="login()" type="submit"placeholder="Submit">
+  </div>
+</div>
