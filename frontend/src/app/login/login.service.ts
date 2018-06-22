@@ -5,7 +5,7 @@ import { User } from './user';
 import { map } from 'rxjs/operators';
 @Injectable()
 export class LoginService {
-    url = '/login'
+    url = 'http://localhost:4100/login'
     constructor(private http: Http,
     ) {
     }
