@@ -32,8 +32,6 @@ export class LoginComponent implements OnInit {
       .subscribe(
         res => {
           if (res) {
-            console.log('user information is ')
-            console.log(res)
             this.user = res
             this.loginSuccessful(res)
           }
@@ -41,7 +39,6 @@ export class LoginComponent implements OnInit {
         error => {
           if (error) {
             this.errorMessage = 'Please check your email or password'
-            console.log(error);
           }
         }
       )

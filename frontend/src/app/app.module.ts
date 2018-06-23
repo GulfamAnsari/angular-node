@@ -9,6 +9,7 @@ import { LoginComponent } from './login/login.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 
 import {LoginService} from './login/login.service';
+import {SignupService} from './sign-up/sign-up.service';
 import { SignUpComponent } from './sign-up/sign-up.component'
 
 @NgModule({
@@ -24,7 +25,7 @@ import { SignUpComponent } from './sign-up/sign-up.component'
     FormsModule,
     HttpModule
   ],
-  providers: [LoginService],
+  providers: [LoginService, SignupService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -11,7 +11,6 @@ export class LoginService {
     }
 
     public login(member: any): any {
-        console.log(member)
         return this.http.post(this.url, member, this.options())
             .pipe(map(this.extractData))
     }
@@ -25,6 +24,9 @@ export class LoginService {
         })
     }
     public extractData(res: Response) {
+        console.log('res')
+        console.log(res)
+        console.log(document.cookie)
         if (res.status != 204) return res.json() || {}
         return {}
     }
