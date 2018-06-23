@@ -21,7 +21,21 @@ export class LoginComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.titleService.setTitle('This is login page')
+    console.log('in oninit')
+    this.titleService.setTitle('This is login page');
+    this.loginService.checkLogin().subscribe(
+      res => {
+        if (res) {
+          this.user = res
+          this.loginSuccessful(res)
+          this.router.navigate(['/dashboard'])
+        }
+      },
+      error => {
+        if (error) {
+        }
+      }
+    )
   }
 
   private login() {

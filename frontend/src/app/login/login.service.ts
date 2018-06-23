@@ -6,6 +6,7 @@ import { map } from 'rxjs/operators';
 @Injectable()
 export class LoginService {
     url = 'http://localhost:4100/login'
+    checkurl = 'http://localhost:4100/check'
     constructor(private http: Http,
     ) {
     }
@@ -19,16 +20,19 @@ export class LoginService {
         return new RequestOptions({
             headers: new Headers({
                 'Content-Type': 'application/json',
-                'Authorization': userData ? userData.clientToken : ''
+                'Authorization': userData ? userData.token : '',
+                withCredentials:true
             })
         })
     }
     public extractData(res: Response) {
-        console.log('res')
-        console.log(res)
-        console.log(document.cookie)
         if (res.status != 204) return res.json() || {}
         return {}
+    }
+
+    public checkLogin() {
+        return this.http.get(this.checkurl, this.options())
+            .pipe(map(this.extractData))
     }
 
 }

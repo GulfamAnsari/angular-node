@@ -30,23 +30,8 @@ export class SignUpComponent implements OnInit {
     
   }
 
-  // validate(id, token) {
-  //   this.signUpService.valiedate(id, token)
-  //     .subscribe(
-  //       user => {
-  //         this.validateToggle = true
-  //         this.regView = [false, false, false, true]
-  //       },
-  //       error => {
-  //         this.errorMessage = error
-  //         this.validateToggle = false
-  //         this.regView = [false, false, false, true]
-  //       }
-  //     )
-  // }
-
   register() {
-    // if (!this.checkName()) return;
+    if (!this.checkName()) return;
     this.signUpService.register({
       email: this.email,
       username: this.username,

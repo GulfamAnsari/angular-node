@@ -12,12 +12,6 @@ export class SignupService {
         private http: Http,
     ){
     }
-     // valiedate (id:string, token:string): Observable<User>{
-    //     return this.http.post(`${this.validateUrl}/${id}/validate`, {token: token}, this.staticService.options())
-    //         .pipe(map(this.staticService.extractData))
-    // }
-
-
     register (member: any): Observable<any>{
         return this.http.post(this.url, member, this.options())
             .pipe(map(this.extractData))
@@ -29,7 +23,7 @@ export class SignupService {
         return new RequestOptions({
             headers: new Headers({
                 'Content-Type': 'application/json',
-                'Authorization': userData ? userData.clientToken : ''
+                'Authorization': userData ? userData.token : ''
             })
         })
     }
