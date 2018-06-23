@@ -1,11 +1,24 @@
 var express = require('express');
 var bodyParser = require('body-parser');
 var app = express();
+var fs = require('fs')
 cookieParser = require('cookie-parser');
 var session = require('express-session')
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json())
+
+// serving angular files
+app.use(express.static('angular-node'));
+app.get('/', (req, response) =>{
+    fs.readFile("angular-node/index.html", (err, data)=>{
+        response.writeHead(200, {'Content-Type': 'text/html'});
+        response.write(data);
+        response.end(data);
+      });
+});
+// *********
+ 
 app.use(session({
     secret: "Shh, its a secret!",
     resave: false,

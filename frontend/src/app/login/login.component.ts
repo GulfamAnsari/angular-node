@@ -21,7 +21,6 @@ export class LoginComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    console.log('in oninit')
     this.titleService.setTitle('This is login page');
     this.loginService.checkLogin().subscribe(
       res => {
