@@ -107,45 +107,36 @@ function userInformation(userData) {
 // sign up
 function writeIntoDabase(req, res, db){
     var dbo = db.db("droitechknow");
-    var userExists = checkUserExist(req, db);
-    if(userExists) {
-        var user = {
-            name: req.body.username,
-            email: req.body.email,
-            password: req.body.password,
-            usertype: req.body.usertype
-        }
-        dbo.collection("login").insertOne(user, (err, response)=> {  
+    dbo.collection("login").find({}).toArray((err, dbResult)=> {  
         if (err) throw err;  
-        res.end(JSON.stringify(user));  
-        console.log("1 record inserted");
-        db.close();  
-        }); 
-    }  else {
-        res.end(null);  
-    }
-}
-
-function checkUserExist(req, db) {
-    var dbo = db.db("droitechknow");
-    result = [];
-    dbo.collection("login").find({}).toArray(function(err, dbResult) {  
-        if (err) throw err;  
-        result = dbResult
-        var email = ''
-        for(var i=0; i<result.length; i++) {
-            email = result[i].email;
+        var user = false;
+        for(var i=0; i<dbResult.length; i++) {
+            if(dbResult[i].email == req.body.email) {
+                console.log('user already exists')
+                user = true;
+                break;
+            }
         }
-        if(email == req.body.email) {
-            console.log('user already exists')
-            return false;
+        if(user) {
+            res.end(null); 
         } else {
-            return true;
+            var user = {
+                name: req.body.username,
+                email: req.body.email,
+                password: req.body.password,
+                usertype: req.body.usertype
+            }
+            dbo.collection("login").insertOne(user, (err, response)=> {  
+            if (err) throw err;  
+            res.end(JSON.stringify(user));  
+            console.log("1 record inserted");
+            db.close();  
+            }); 
         }
         db.close();  
       });  
-    
 }
+
 
 // start the server
 app.listen(port);

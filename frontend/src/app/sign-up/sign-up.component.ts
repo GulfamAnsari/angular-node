@@ -17,7 +17,6 @@ export class SignUpComponent implements OnInit {
     route: ActivatedRoute
   ) { 
   }
-  userExist = ''
   public username: string = ''
   public email: string = ''
   public password: string = ''
@@ -43,12 +42,13 @@ export class SignUpComponent implements OnInit {
           console.log(result)
           if (result) {
             console.log('Thanks your for sign up')
+            this.errorMessage = 'Thanks your for sign up '
             this.regView = [false, true, false, false]
           }
         },
         error => {
           console.log('user already exists')
-          this.userExist = 'User already exists'
+          this.errorMessage = 'User already exists'
         }
       )
   }
