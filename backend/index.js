@@ -17,29 +17,50 @@ app.get('/', (req, response) =>{
         response.end(data);
       });
 });
-// *********
- 
+// ###################
+// not using now *********
 app.use(session({
     secret: "Shh, its a secret!",
     resave: false,
     saveUninitialized: false,
     cookie: { maxAge: 10000 }
     }));
+// *******************
 
 var port = 4100;
 currectUser =''
 var MongoClient = require('mongodb').MongoClient;  
 var sessionId = '';
+
+// API end points
 app.post('/login', (req, res) =>{
-    connectMongoDBForLogin(req, res);
+    connectMongoDB(req, res);
 });
 
+app.post('/signup', (req, res) =>{
+    connectMongoDB(req, res);
+});
 
-function connectMongoDBForLogin(req, res) {
+sessionId = null
+app.get('/check', (req, res) =>{
+    if(sessionId) {
+        res.end(JSON.stringify(currectUser));  
+    } else {
+        res.end(null)
+    }
+});
+// ******end ******
+
+
+function connectMongoDB(req, res) {
     var url = "mongodb://localhost:27017/data";  
     MongoClient.connect(url, function(err, db) {  
         if (err) throw err;  
-        fetchDatabaseResults(req, res, db)
+        if(req.url == '/login') {
+            fetchDatabaseResults(req, res, db)
+        } else if (req.url == '/signup') {
+            writeIntoDabase(req, res, db)
+        }
       });  
 }
 
@@ -60,11 +81,6 @@ function authenticateUser(req, dbResult, res) {
         } 
     }
     if(data) {
-        req.session.email = req.body.email
-        sessionId  = 123;
-        setTimeout(()=>{
-            sessionId = null;
-        }, 10000)
         var userInfo = userInformation(data)
         console.log('successfully login')
         res.end(JSON.stringify(userInfo));  
@@ -87,42 +103,48 @@ function userInformation(userData) {
     return userInfo;
 }
 
-// check login according to sessionID 
-app.get('/check', (req, res) =>{
-    if(sessionId) {
-        res.end(JSON.stringify(currectUser));  
-    } else {
-        res.end(null)
-    }
-});
 
 // sign up
-app.post('/signup', (req, res) =>{
-    connectMongoDBforsignUp(req, res);
-});
-
-function connectMongoDBforsignUp(req, res) {
-    var url = "mongodb://localhost:27017/data";  
-    MongoClient.connect(url, function(err, db) {  
-        if (err) throw err;  
-        writeIntoDabase(req, res, db)
-      });  
-}
-
 function writeIntoDabase(req, res, db){
     var dbo = db.db("droitechknow");
-    var user = {
-        name: req.body.username,
-        email: req.body.email,
-        password: req.body.password,
-        usertype: req.body.usertype
+    var userExists = checkUserExist(req, db);
+    if(userExists) {
+        var user = {
+            name: req.body.username,
+            email: req.body.email,
+            password: req.body.password,
+            usertype: req.body.usertype
+        }
+        dbo.collection("login").insertOne(user, (err, response)=> {  
+        if (err) throw err;  
+        res.end(JSON.stringify(user));  
+        console.log("1 record inserted");
+        db.close();  
+        }); 
+    }  else {
+        res.end(null);  
     }
-    dbo.collection("login").insertOne(user, (err, response)=> {  
-    if (err) throw err;  
-    res.end(JSON.stringify(user));  
-    console.log("1 record inserted");
-    db.close();  
-    });  
+}
+
+function checkUserExist(req, db) {
+    var dbo = db.db("droitechknow");
+    result = [];
+    dbo.collection("login").find({}).toArray(function(err, dbResult) {  
+        if (err) throw err;  
+        result = dbResult
+        var email = ''
+        for(var i=0; i<result.length; i++) {
+            email = result[i].email;
+        }
+        if(email == req.body.email) {
+            console.log('user already exists')
+            return false;
+        } else {
+            return true;
+        }
+        db.close();  
+      });  
+    
 }
 
 // start the server

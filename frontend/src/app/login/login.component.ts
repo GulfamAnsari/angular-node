@@ -65,4 +65,8 @@ export class LoginComponent implements OnInit {
   private setUserDetails(user) {
     localStorage.setItem('user', JSON.stringify(user));
   }
+
+  public signup() {
+    this.router.navigate(['/signup'])
+  }
 }
