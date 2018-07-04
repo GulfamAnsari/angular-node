@@ -3,17 +3,19 @@ import { Http, Response } from '@angular/http'
 import { Headers, RequestOptions } from '@angular/http'
 import { User } from './user';
 import { map } from 'rxjs/operators';
+import {AuthService} from './../guards/auth.service';
 @Injectable()
 export class LoginService {
     url = 'http://localhost:4100/login'
     checkurl = 'http://localhost:4100/check'
     constructor(private http: Http,
+        private authService:AuthService
     ) {
     }
 
     public login(member: any): any {
-        return this.http.post(this.url, member, this.options())
-            .pipe(map(this.extractData))
+        return this.authService.login(member)
+        .pipe(map(this.extractData))
     }
     public options = () => {
         let userData = JSON.parse(localStorage.getItem('user'));
